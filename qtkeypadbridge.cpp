@@ -4,6 +4,7 @@
 #include "keymap.h"
 #include "core/keypad.h"
 #include "qmlbridge.h"
+#include "qnamespace.h"
 #include <QHash>
 
 QtKeypadBridge qt_keypad_bridge;
@@ -22,26 +23,26 @@ static QHash<int, int> pressed_keys;
 
 void keyToKeypad(QKeyEvent *event)
 {
-    static const int ALT   = 0x02000000;
+    static const int META   = Qt::Key_Shift;
     static const QHash<int, int> QtKeyMap {
             // Touchpad left buttons
-        {Qt::Key_Escape, keymap::esc}
+        {Qt::Key_CapsLock, keymap::esc}
         ,{Qt::Key_End, keymap::pad}
         ,{Qt::Key_Tab, keymap::tab}
 
             // Touchpad right buttons
         ,{Qt::Key_Home, keymap::on}
-        ,{Qt::Key_Escape | ALT, keymap::on}
+        ,{Qt::Key_Escape | META, keymap::on}
         ,{Qt::Key_PageUp, keymap::doc}
-        ,{Qt::Key_D | ALT, keymap::doc}
+        ,{Qt::Key_D | META, keymap::doc}
         ,{Qt::Key_PageDown, keymap::menu}
-        ,{Qt::Key_M | ALT, keymap::menu}
+        ,{Qt::Key_M | META, keymap::menu}
 
             // Touchpad bottom buttons
         ,{Qt::Key_Control, keymap::ctrl}
-        ,{Qt::Key_Shift, keymap::shift}
+        ,{Qt::MetaModifier, keymap::shift}
         ,{Qt::Key_Insert, keymap::var}
-        ,{Qt::Key_V | ALT, keymap::var}
+        ,{Qt::Key_V | META, keymap::var}
         ,{Qt::Key_Backspace, keymap::del}
         ,{Qt::Key_Delete, keymap::del}
 
@@ -73,21 +74,21 @@ void keyToKeypad(QKeyEvent *event)
         ,{Qt::Key_Y, keymap::ay}
         ,{Qt::Key_Z, keymap::az}
         ,{Qt::Key_Less, keymap::ee}
-        ,{Qt::Key_Less | ALT, keymap::ee}
-        ,{Qt::Key_E | ALT, keymap::ee}
+        ,{Qt::Key_Less | META, keymap::ee}
+        ,{Qt::Key_E | META, keymap::ee}
         ,{Qt::Key_Bar, keymap::pi}
-        ,{Qt::Key_Bar | ALT, keymap::pi}
+        ,{Qt::Key_Bar | META, keymap::pi}
         ,{Qt::Key_Comma, keymap::comma}
-        ,{Qt::Key_Comma | ALT, keymap::comma}
+        ,{Qt::Key_Comma | META, keymap::comma}
         ,{Qt::Key_Question, keymap::punct}
-        ,{Qt::Key_Question | ALT, keymap::punct}
-        ,{Qt::Key_W | ALT, keymap::punct}
+        ,{Qt::Key_Question | META, keymap::punct}
+        ,{Qt::Key_W | META, keymap::punct}
         ,{Qt::Key_Greater, keymap::flag}
-        ,{Qt::Key_Greater | ALT, keymap::flag}
-        ,{Qt::Key_F | ALT, keymap::flag}
+        ,{Qt::Key_Greater | META, keymap::flag}
+        ,{Qt::Key_F | META, keymap::flag}
         ,{Qt::Key_Space, keymap::space}
-        ,{Qt::Key_Enter | ALT, keymap::ret}
-        ,{Qt::Key_Return | ALT, keymap::ret}
+        ,{Qt::Key_Enter | META, keymap::ret}
+        ,{Qt::Key_Return | META, keymap::ret}
 
             // Numpad buttons
         ,{Qt::Key_0, keymap::n0}
@@ -101,57 +102,57 @@ void keyToKeypad(QKeyEvent *event)
         ,{Qt::Key_8, keymap::n8}
         ,{Qt::Key_9, keymap::n9}
         ,{Qt::Key_Period, keymap::dot}
-        ,{Qt::Key_Period | ALT, keymap::dot}
-        ,{Qt::Key_Minus | ALT, keymap::neg}
+        ,{Qt::Key_Period | META, keymap::dot}
+        ,{Qt::Key_Minus | META, keymap::neg}
         ,{Qt::Key_QuoteLeft, keymap::neg}
-        ,{Qt::Key_QuoteLeft | ALT, keymap::neg}
+        ,{Qt::Key_QuoteLeft | META, keymap::neg}
 
             // Left buttons
         ,{Qt::Key_Equal, keymap::equ}
-        ,{Qt::Key_Equal | ALT, keymap::equ}
-        ,{Qt::Key_Q | ALT, keymap::equ}
+        ,{Qt::Key_Equal | META, keymap::equ}
+        ,{Qt::Key_Q | META, keymap::equ}
         ,{Qt::Key_Backslash, keymap::trig}
-        ,{Qt::Key_Backslash | ALT, keymap::trig}
-        ,{Qt::Key_T | ALT, keymap::trig}
+        ,{Qt::Key_Backslash | META, keymap::trig}
+        ,{Qt::Key_T | META, keymap::trig}
         ,{Qt::Key_AsciiCircum, keymap::pow}
-        ,{Qt::Key_AsciiCircum | ALT, keymap::pow}
-        ,{Qt::Key_P | ALT, keymap::pow}
+        ,{Qt::Key_AsciiCircum | META, keymap::pow}
+        ,{Qt::Key_P | META, keymap::pow}
         ,{Qt::Key_At, keymap::squ}
-        ,{Qt::Key_At | ALT, keymap::squ}
-        ,{Qt::Key_2 | ALT, keymap::squ}
+        ,{Qt::Key_At | META, keymap::squ}
+        ,{Qt::Key_2 | META, keymap::squ}
         ,{Qt::Key_BracketLeft, keymap::exp}
-        ,{Qt::Key_BracketLeft | ALT, keymap::exp}
-        ,{Qt::Key_X | ALT, keymap::exp}
+        ,{Qt::Key_BracketLeft | META, keymap::exp}
+        ,{Qt::Key_X | META, keymap::exp}
         ,{Qt::Key_BracketRight, keymap::pow10}
-        ,{Qt::Key_BracketRight | ALT, keymap::pow10}
-        ,{Qt::Key_1 | ALT, keymap::pow10}
+        ,{Qt::Key_BracketRight | META, keymap::pow10}
+        ,{Qt::Key_1 | META, keymap::pow10}
         ,{Qt::Key_ParenLeft, keymap::pleft}
-        ,{Qt::Key_ParenLeft | ALT, keymap::pleft}
+        ,{Qt::Key_ParenLeft | META, keymap::pleft}
         ,{Qt::Key_F1, keymap::pleft}
         ,{Qt::Key_ParenRight, keymap::pright}
-        ,{Qt::Key_ParenRight | ALT, keymap::pright}
+        ,{Qt::Key_ParenRight | META, keymap::pright}
         ,{Qt::Key_F2, keymap::pright}
 
             // Right buttons
         ,{Qt::Key_Semicolon, keymap::metrix}
-        ,{Qt::Key_Semicolon | ALT, keymap::metrix}
-        ,{Qt::Key_O | ALT, keymap::metrix}
+        ,{Qt::Key_Semicolon | META, keymap::metrix}
+        ,{Qt::Key_O | META, keymap::metrix}
         ,{Qt::Key_Apostrophe, keymap::cat}
-        ,{Qt::Key_Apostrophe | ALT, keymap::cat}
-        ,{Qt::Key_C | ALT, keymap::cat}
+        ,{Qt::Key_Apostrophe | META, keymap::cat}
+        ,{Qt::Key_C | META, keymap::cat}
         ,{Qt::Key_Asterisk, keymap::mult}
-        ,{Qt::Key_Asterisk | ALT, keymap::mult}
-        ,{Qt::Key_A | ALT, keymap::mult}
+        ,{Qt::Key_Asterisk | META, keymap::mult}
+        ,{Qt::Key_A | META, keymap::mult}
         ,{Qt::Key_Slash, keymap::div}
-        ,{Qt::Key_Slash | ALT, keymap::div}
+        ,{Qt::Key_Slash | META, keymap::div}
         ,{Qt::Key_F3, keymap::div}
         ,{Qt::Key_Plus, keymap::plus}
-        ,{Qt::Key_Plus | ALT, keymap::plus}
-        ,{Qt::Key_Equal | ALT, keymap::plus}
+        ,{Qt::Key_Plus | META, keymap::plus}
+        ,{Qt::Key_Equal | META, keymap::plus}
         ,{Qt::Key_Minus, keymap::minus}
-        ,{Qt::Key_Minus | ALT, keymap::minus}
+        ,{Qt::Key_Minus | META, keymap::minus}
         ,{Qt::Key_Underscore, keymap::minus}
-        ,{Qt::Key_Underscore | ALT, keymap::minus}
+        ,{Qt::Key_Underscore | META, keymap::minus}
         ,{Qt::Key_Enter, keymap::enter}
         ,{Qt::Key_Return, keymap::enter}
     };
@@ -176,18 +177,18 @@ void keyToKeypad(QKeyEvent *event)
     {
         auto mkey = event->key();
 
-        if (event->modifiers() & Qt::ShiftModifier && mkey == Qt::Key_Alt)
+        if (event->modifiers() & Qt::ShiftModifier && mkey == Qt::Key_Shift)
         {
             setKeypad(keymap::shift, false);
             return;
         }
 
-        if (event->modifiers() & Qt::AltModifier)
+        if (event->modifiers() & Qt::Key_Shift)
         {
-            if (mkey == Qt::Key_Shift)
+            if (mkey == Qt::MetaModifier)
                 return; // Just ignore it
             else
-                mkey |= ALT; // Compose alt into the unused bit of the keycode
+                mkey |= META; // Compose alt into the unused bit of the keycode
         }
 
         auto translated = QtKeyMap.find(mkey);
